@@ -39,6 +39,8 @@ original_map = [row[:] for row in game_map]
 fps_start_time = time.time()
 fps_frame_count = 0
 
+ZOOM_FACTOR = 1.1  # Adjust the zoom factor according to your preference
+s1, s2 = 10, 200  # Set the minimum and maximum sizes for zooming
 
 def draw_map():
     global game_map
@@ -109,7 +111,20 @@ def handle_key(event):
     revert_to_original()
 
 
+def handle_mouse_wheel(event):
+    global RED_SQUARE_SIZE, TILE_SIZE
+    if event.delta > 0:  # Zoom in
+        RED_SQUARE_SIZE = min(s2, int(RED_SQUARE_SIZE * ZOOM_FACTOR))
+        TILE_SIZE = min(s2, int(TILE_SIZE * ZOOM_FACTOR))
+    elif event.delta < 0:  # Zoom out
+        RED_SQUARE_SIZE = max(s1, int(RED_SQUARE_SIZE / ZOOM_FACTOR))
+        TILE_SIZE = max(s1, int(TILE_SIZE / ZOOM_FACTOR))
+
+    revert_to_original()
+
+
 window.bind("<Key>", handle_key)
+window.bind("<MouseWheel>", handle_mouse_wheel)
 
 update()
 window.mainloop()
